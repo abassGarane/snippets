@@ -24,8 +24,13 @@ func main()  {
   mux.HandleFunc("/snippet/create",CreateSnippet)
   mux.Handle("/static/", http.StripPrefix("/static",fileServer))
   
+  srv := &http.Server{
+    Addr: *addr,
+    ErrorLog: errLog,
+    Handler: mux,
+  }
 
-  if err := http.ListenAndServe(*addr,mux); err != nil{
+  if err := srv.ListenAndServe(); err != nil{
     errLog.Fatal(err)
   }
 }
