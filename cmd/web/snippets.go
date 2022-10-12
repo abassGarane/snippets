@@ -15,7 +15,12 @@ func Home(w http.ResponseWriter, r *http.Request)  {
     return
   }
   log.Println("Home snippet handler called...")
-  ts, err := template.ParseFiles("./ui/html/home.page.tmpl")
+  files := []string{
+    "./ui/html/home.page.tmpl",
+    "./ui/html/base.layout.tmpl",
+    "./ui/html/footer.partial.tmpl",
+  }
+  ts, err := template.ParseFiles(files...)
   if err != nil{
     http.Error(w,"Internal server error..", http.StatusInternalServerError)
   }
