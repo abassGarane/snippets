@@ -4,15 +4,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/abassGarane/snippet/handlers"
 )
 
 func main()  {
   log.Println("Starting main server on port 4000...")
   mux := http.NewServeMux()
-  mux.HandleFunc("/", handlers.Home)
-  mux.HandleFunc("/snippet",handlers.ShowSnippet)
-  mux.HandleFunc("/snippet/create",handlers.CreateSnippet)
+  mux.HandleFunc("/", Home)
+  mux.HandleFunc("/snippet",ShowSnippet)
+  mux.HandleFunc("/snippet/create",CreateSnippet)
   
 
   if err := http.ListenAndServe(":4000",mux); err != nil{
