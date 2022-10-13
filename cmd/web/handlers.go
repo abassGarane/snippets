@@ -24,28 +24,31 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
     app.ServerError(w,err)
     return
   }
-  for _, snippet := range s{
-    fmt.Fprintf(w, "%v\n", snippet)
+  // for _, snippet := range s{
+  //   fmt.Fprintf(w, "%v\n", snippet)
+  // }
+  data := &templateData{ 
+    Snippets: s,
   }
 
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
- //    // app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error..", http.StatusInternalServerError)
- //    app.ServerError(w,err)
- //    return
-	// }
-	// if err = ts.Execute(w, nil); err != nil {
-	// 	// app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error...", http.StatusInternalServerError)
- //    app.ServerError(w,err) 
- //    return
-	// }
+	files := []string{
+		"./ui/html/home.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+    // app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal server error..", http.StatusInternalServerError)
+    app.ServerError(w,err)
+    return
+	}
+	if err = ts.Execute(w, data); err != nil {
+		// app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal server error...", http.StatusInternalServerError)
+    app.ServerError(w,err) 
+    return
+	}
 }
 
 func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
@@ -64,7 +67,8 @@ func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
     app.ServerError(w,err)
     return
   }
-files := []string{
+  data := &templateData{Snippet: s}
+  files := []string{
 		"./ui/html/show.page.tmpl",
 		"./ui/html/base.layout.tmpl",
 		"./ui/html/footer.partial.tmpl",
@@ -76,7 +80,7 @@ files := []string{
     app.ServerError(w,err)
     return
 	}
-	if err = ts.Execute(w, s); err != nil {
+	if err = ts.Execute(w, data); err != nil {
 		// app.errorLog.Println(err.Error())
 		// http.Error(w, "Internal server error...", http.StatusInternalServerError)
     app.ServerError(w,err) 
