@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ~/apps/mysql:/var/lib/mysq
+    environment:
+      - MYSQL_ROOT_PASSWORD=philos
+      - MYSQL_PASSWORD=philos
+      - MYSQL_USER=philos
+      - MYSQL_DATABASE=snippet
