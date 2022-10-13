@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"html/template"
+	// "html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,24 +18,34 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	app.infoLog.Println("Home snippet handler called...")
-	files := []string{
-		"./ui/html/home.page.tmpl",
-		"./ui/html/base.layout.tmpl",
-		"./ui/html/footer.partial.tmpl",
-	}
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-    // app.errorLog.Println(err.Error())
-		// http.Error(w, "Internal server error..", http.StatusInternalServerError)
+  // getting all snippets from database
+  s, err := app.snippets.Latest()
+  if err != nil{
     app.ServerError(w,err)
     return
-	}
-	if err = ts.Execute(w, nil); err != nil {
-		// app.errorLog.Println(err.Error())
-		// http.Error(w, "Internal server error...", http.StatusInternalServerError)
-    app.ServerError(w,err) 
-    return
-	}
+  }
+  for _, snippet := range s{
+    fmt.Fprintf(w, "%v\n", snippet)
+  }
+
+	// files := []string{
+	// 	"./ui/html/home.page.tmpl",
+	// 	"./ui/html/base.layout.tmpl",
+	// 	"./ui/html/footer.partial.tmpl",
+	// }
+	// ts, err := template.ParseFiles(files...)
+	// if err != nil {
+ //    // app.errorLog.Println(err.Error())
+	// 	// http.Error(w, "Internal server error..", http.StatusInternalServerError)
+ //    app.ServerError(w,err)
+ //    return
+	// }
+	// if err = ts.Execute(w, nil); err != nil {
+	// 	// app.errorLog.Println(err.Error())
+	// 	// http.Error(w, "Internal server error...", http.StatusInternalServerError)
+ //    app.ServerError(w,err) 
+ //    return
+	// }
 }
 
 func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
