@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/abassGarane/snippet/pkg/models"
 )
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
@@ -44,8 +46,16 @@ func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
     app.NotFound(w)
 		return
 	}
+  s, err := app.snippets.Get(id)
+  if err == models.ErrorNoRecord{
+    app.NotFound(w)
+    return
+  }else if err != nil{
+    app.ServerError(w,err)
+    return
+  }
 	// w.Write([]byte("Display a specific snippet ..."))
-	fmt.Fprintf(w, "Display a specific snippet with id %d...", id)
+	fmt.Fprintf(w, "%v", s)
 }
 
 func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
