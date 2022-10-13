@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	// "html/template"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -64,8 +64,26 @@ func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
     app.ServerError(w,err)
     return
   }
+files := []string{
+		"./ui/html/show.page.tmpl",
+		"./ui/html/base.layout.tmpl",
+		"./ui/html/footer.partial.tmpl",
+	}
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+    // app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal server error..", http.StatusInternalServerError)
+    app.ServerError(w,err)
+    return
+	}
+	if err = ts.Execute(w, s); err != nil {
+		// app.errorLog.Println(err.Error())
+		// http.Error(w, "Internal server error...", http.StatusInternalServerError)
+    app.ServerError(w,err) 
+    return
+	}
 	// w.Write([]byte("Display a specific snippet ..."))
-	fmt.Fprintf(w, "%v", s)
+	// fmt.Fprintf(w, "%v", s)
 }
 
 func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
