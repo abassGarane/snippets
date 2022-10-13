@@ -1,17 +1,20 @@
 package main
 
 import (
-  "database/sql"
+	"database/sql"
 	"flag"
 	"log"
 	"net/http"
 	"os"
-  _ "github.com/go-sql-driver/mysql"
+
+	"github.com/abassGarane/snippet/pkg/models/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type application struct{
   errorLog *log.Logger
   infoLog *log.Logger
+  snippets *mysql.SnippetModel
 }
 
 func main()  {
@@ -34,6 +37,7 @@ func main()  {
   app := &application{
     errorLog: errLog,
     infoLog: infoLog,
+    snippets: &mysql.SnippetModel{DB: db},
   }
 
   infoLog.Printf("Starting main server on port %s...\n",*addr)

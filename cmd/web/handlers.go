@@ -60,7 +60,17 @@ func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
     app.ClientError(w,http.StatusMethodNotAllowed)
 		return
 	}
+  title := "O snail"
+  content := "O snail\nClimb Mount Kenya,\n But slowly, slowly!\n"
+  expires := "7"
+  id , err := app.snippets.Insert(title, content, expires)
+  app.infoLog.Println(id)
+  if err != nil{
+    app.ServerError(w,err)
+    return
+  }
+  http.Redirect(w,r,fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
 	// Update or modify an existing header
 	// w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte("Create a new snippet..."))
+	// w.Write([]byte("Create a new snippet..."))
 }
