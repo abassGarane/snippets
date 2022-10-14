@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -26,7 +27,11 @@ func (app *application)render(w http.ResponseWriter, r *http.Request, name strin
     app.ServerError(w,fmt.Errorf("Template %s does not exist", name))
     return
   }
-  if err := ts.Execute(w, td); err != nil{
+  buf := new(bytes.Buffer)
+  if err := ts.Execute(buf, td); err != nil{
     app.ServerError(w,err)
+    return
   }
+  buf.WriteTo(w)
+  
 }
