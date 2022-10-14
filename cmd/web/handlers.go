@@ -56,7 +56,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
 	app.infoLog.Println("Show snippet handler called...")
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+  id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
 		// http.NotFound(w, r)
     app.NotFound(w)
@@ -121,4 +121,8 @@ func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
 	// Update or modify an existing header
 	// w.Header().Set("Content-Type", "application/json")
 	// w.Write([]byte("Create a new snippet..."))
+}
+
+func (app *application)CreateSnippetForm(w http.ResponseWriter, r *http.Request)  {
+  w.Write([]byte("Create a new snippet"))
 }
