@@ -2,11 +2,11 @@ package main
 
 import (
 	"html/template"
-	"net/url"
 	"path/filepath"
 
 	"time"
 
+	"github.com/abassGarane/snippet/pkg/forms"
 	"github.com/abassGarane/snippet/pkg/models"
 )
 
@@ -14,8 +14,9 @@ type templateData struct{
   Snippet *models.Snippet
   Snippets []*models.Snippet
   CurrentYear int
-  FormErrors map[string]string
-  FormData url.Values
+  // FormErrors map[string]string
+  // FormData url.Values
+  Form *forms.Form
 }
 
 func humanDate(t time.Time) string  {

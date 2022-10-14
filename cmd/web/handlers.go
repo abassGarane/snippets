@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-	"strings"
-	"unicode/utf8"
-
-	// "html/template"
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/abassGarane/snippet/pkg/forms"
 	"github.com/abassGarane/snippet/pkg/models"
 )
 
@@ -27,31 +24,6 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
     app.ServerError(w,err)
     return
   }
-  // for _, snippet := range s{
-  //   fmt.Fprintf(w, "%v\n", snippet)
-  // }
- //  data := &templateData{ 
- //    Snippets: s,
- //  }
-
-	// files := []string{
-	// 	"./ui/html/home.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
- //    // app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error..", http.StatusInternalServerError)
- //    app.ServerError(w,err)
- //    return
-	// }
-	// if err = ts.Execute(w, data); err != nil {
-	// 	// app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error...", http.StatusInternalServerError)
- //    app.ServerError(w,err) 
- //    return
-	// }
   app.render(w,r,"home.page.tmpl", templateData{
     Snippets: s,
   })
@@ -73,27 +45,6 @@ func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
     app.ServerError(w,err)
     return
   }
- //  data := &templateData{Snippet: s}
- //  files := []string{
-	// 	"./ui/html/show.page.tmpl",
-	// 	"./ui/html/base.layout.tmpl",
-	// 	"./ui/html/footer.partial.tmpl",
-	// }
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
- //    // app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error..", http.StatusInternalServerError)
- //    app.ServerError(w,err)
- //    return
-	// }
-	// if err = ts.Execute(w, data); err != nil {
-	// 	// app.errorLog.Println(err.Error())
-	// 	// http.Error(w, "Internal server error...", http.StatusInternalServerError)
- //    app.ServerError(w,err) 
- //    return
-	// }
-	// w.Write([]byte("Display a specific snippet ..."))
-	// fmt.Fprintf(w, "%v", s)
   app.render(w,r,"show.page.tmpl", templateData{
     Snippet: s,
   })
@@ -106,68 +57,27 @@ func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
     app.ClientError(w,http.StatusBadRequest)
     return
   }
-  title := r.PostForm.Get("title")
-  content := r.PostForm.Get("content")
-  expires := r.PostForm.Get("expires")
+  form := forms.New(r.PostForm)
+  form.Required("title", "content", "expires")
+  form.MaxLength("title", 100)
+  form.PermittedValues("expires", "365", "7", "1")
 
-  //Validations
-  errors := make(map[string]string)
-
-  if strings.TrimSpace(title) == ""{
-    errors["title"]="This field can not be blank"
-  }else if utf8.RuneCountInString(title) >100{
-    errors["title"]="This field is too long (maximum length is 100)"
-  }
-
-  if strings.TrimSpace(content) == ""{
-    errors["content"] = "This field can not be blank"
-  }
-
-   if strings.TrimSpace(expires) == ""{
-    errors["expires"] = "This field can not be blank"
-  }else if expires != "365" && expires != "7" && expires != "1"{
-    errors["expires"] = "This field is invalid"
-  }
-  if len(errors) >0{
-    app.render(w,r,"create.page.tmpl", templateData{
-      FormErrors: errors,
-      FormData: r.PostForm,
-    })
+  // invalid form
+  if !form.Valid(){
+    app.render(w,r,"create.page.tmpl", templateData{Form: form})
     return
   }
   
-  id , err := app.snippets.Insert(title, content, expires)
+  id , err := app.snippets.Insert(form.Get("title"),form.Get("content"), form.Get("expires"))
   if err != nil{
     app.ServerError(w,err)
     return
   }
   http.Redirect(w,r,fmt.Sprintf("/snippet/%d",id), http.StatusSeeOther)
-	// Removing a header
-	// w.Header()["Date"] = nil
-	// if r.Method != "POST" {
-	// 	w.Header().Set("Allow", "POST")
-	// 	// w.WriteHeader(http.StatusMethodNotAllowed)
-	// 	// w.Write([]byte("Method not allowed"))
-	// 	// http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
- //    app.ClientError(w,http.StatusMethodNotAllowed)
-	// 	return
-	// }
- //  title := "O snail"
- //  content := "O snail\nClimb Mount Kenya,\n But slowly, slowly!\n"
- //  expires := "7"
- //  id , err := app.snippets.Insert(title, content, expires)
- //  app.infoLog.Println(id)
- //  if err != nil{
- //    app.ServerError(w,err)
- //    return
- //  }
- //  http.Redirect(w,r,fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
-	// // Update or modify an existing header
-	// // w.Header().Set("Content-Type", "application/json")
-	// // w.Write([]byte("Create a new snippet..."))
 }
 
 func (app *application)CreateSnippetForm(w http.ResponseWriter, r *http.Request)  {
-  td := templateData{}
-  app.render(w,r,"create.page.tmpl", td)
+  app.render(w,r,"create.page.tmpl", templateData{
+    Form: forms.New(nil),
+  })
 }
