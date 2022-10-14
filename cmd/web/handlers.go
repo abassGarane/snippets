@@ -98,31 +98,46 @@ func (app *application) ShowSnippet(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) CreateSnippet(w http.ResponseWriter, r *http.Request) {
 	app.infoLog.Println("CreateSnippet snippet handler called...")
-	// Removing a header
-	w.Header()["Date"] = nil
-	if r.Method != "POST" {
-		w.Header().Set("Allow", "POST")
-		// w.WriteHeader(http.StatusMethodNotAllowed)
-		// w.Write([]byte("Method not allowed"))
-		// http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
-    app.ClientError(w,http.StatusMethodNotAllowed)
-		return
-	}
-  title := "O snail"
-  content := "O snail\nClimb Mount Kenya,\n But slowly, slowly!\n"
-  expires := "7"
+
+  if err := r.ParseForm(); err != nil{
+    app.ClientError(w,http.StatusBadRequest)
+    return
+  }
+  title := r.PostForm.Get("title")
+  content := r.PostForm.Get("content")
+  expires := r.PostForm.Get("expires")
   id , err := app.snippets.Insert(title, content, expires)
-  app.infoLog.Println(id)
   if err != nil{
     app.ServerError(w,err)
     return
   }
-  http.Redirect(w,r,fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
-	// Update or modify an existing header
-	// w.Header().Set("Content-Type", "application/json")
-	// w.Write([]byte("Create a new snippet..."))
+  http.Redirect(w,r,fmt.Sprintf("/snippet/%d",id), http.StatusSeeOther)
+	// Removing a header
+	// w.Header()["Date"] = nil
+	// if r.Method != "POST" {
+	// 	w.Header().Set("Allow", "POST")
+	// 	// w.WriteHeader(http.StatusMethodNotAllowed)
+	// 	// w.Write([]byte("Method not allowed"))
+	// 	// http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
+ //    app.ClientError(w,http.StatusMethodNotAllowed)
+	// 	return
+	// }
+ //  title := "O snail"
+ //  content := "O snail\nClimb Mount Kenya,\n But slowly, slowly!\n"
+ //  expires := "7"
+ //  id , err := app.snippets.Insert(title, content, expires)
+ //  app.infoLog.Println(id)
+ //  if err != nil{
+ //    app.ServerError(w,err)
+ //    return
+ //  }
+ //  http.Redirect(w,r,fmt.Sprintf("/snippet?id=%d", id), http.StatusSeeOther)
+	// // Update or modify an existing header
+	// // w.Header().Set("Content-Type", "application/json")
+	// // w.Write([]byte("Create a new snippet..."))
 }
 
 func (app *application)CreateSnippetForm(w http.ResponseWriter, r *http.Request)  {
-  w.Write([]byte("Create a new snippet"))
+  td := templateData{}
+  app.render(w,r,"create.page.tmpl", td)
 }
