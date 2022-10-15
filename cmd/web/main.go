@@ -72,6 +72,9 @@ func main()  {
     ErrorLog: errLog,
     Handler: app.Routes(),
     TLSConfig: tlsConfig,
+    IdleTimeout: time.Minute,
+    ReadTimeout: 5 *time.Second,
+    WriteTimeout: 10 *time.Second,
   }
 
   if err := srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem"); err != nil{
