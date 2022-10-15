@@ -14,7 +14,6 @@ func (app *application)Routes()http.Handler  {
 
   // Registering a router
   mux := pat.New()
-  // mux := http.NewServeMux()
 
   mux.Get("/", dynamicMiddleware.ThenFunc(app.Home))
   mux.Get("/snippet/create", dynamicMiddleware.ThenFunc(app.CreateSnippetForm))
