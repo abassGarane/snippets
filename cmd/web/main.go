@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/abassGarane/snippet/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golangcollege/sessions"
 )
 
 type application struct{
@@ -17,12 +19,14 @@ type application struct{
   infoLog *log.Logger
   snippets *mysql.SnippetModel
   templateCache map[string]*template.Template
+  session *sessions.Session
 }
 
 func main()  {
   //Parsing commandline flags
   addr := flag.String("addr",":4000","HTTP network address")
   dsn := flag.String("dsn","root:philos@/snippetbox?parseTime=true","Mysql database Connection string")
+  secret := flag.String("secret", "kayfdas8saiXBUusu6ra", "Secret for session management")
   flag.Parse()
   
   // custom logger
@@ -42,9 +46,14 @@ func main()  {
     errLog.Fatal(err)
   }
 
+  // Initialize sessions
+  session := sessions.New([]byte(*secret))
+  session.Lifetime = 12*time.Hour
+
   app := &application{
     errorLog: errLog,
     infoLog: infoLog,
+    session: session,
     snippets: &mysql.SnippetModel{DB: db},
     templateCache: templateCache,
   }
