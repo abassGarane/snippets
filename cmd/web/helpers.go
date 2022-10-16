@@ -45,3 +45,7 @@ func (app *application)render(w http.ResponseWriter, r *http.Request, name strin
   buf.WriteTo(w)
   
 }
+
+func (app *application)AuthenticatedUser(r *http.Request)int  {
+  return app.session.GetInt(r, "userID")
+}
