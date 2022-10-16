@@ -1,9 +1,0 @@
-{{template "base" .}}
-
-{{define "title"}}Signup{{end}}
-
-{{define "body"}}
-<form>
-  {{with .Form}}
-</form>
-{{end}}
