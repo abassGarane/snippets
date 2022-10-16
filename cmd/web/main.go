@@ -51,6 +51,8 @@ func main()  {
   // Initialize sessions
   session := sessions.New([]byte(*secret))
   session.Lifetime = 12*time.Hour
+  session.SameSite=http.SameSiteStrictMode
+  session.Secure = true
 
   app := &application{
     errorLog: errLog,
