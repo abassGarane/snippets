@@ -23,6 +23,9 @@ type application struct{
   session *sessions.Session
   users *mysql.UserModel
 }
+//context keys
+type contextKey string
+var contextKeyUser = contextKey("user")
 
 func main()  {
   //Parsing commandline flags

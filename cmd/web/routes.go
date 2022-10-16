@@ -10,7 +10,7 @@ func (app *application)Routes()http.Handler  {
 
   // middlewares
   standardMiddlewares := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
-  dynamicMiddleware := alice.New(app.session.Enable, app.noSurf)
+  dynamicMiddleware := alice.New(app.session.Enable, app.noSurf, app.authenticate)
 
   // Registering a router
   mux := pat.New()

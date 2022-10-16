@@ -18,7 +18,7 @@ type templateData struct{
   // FormData url.Values
   Form *forms.Form
   Flash string
-  AuthenticatedUser int
+  AuthenticatedUser *models.User
   CSRFToken string
 }
 
