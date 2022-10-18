@@ -10,6 +10,10 @@ import (
 	"github.com/abassGarane/snippet/pkg/models"
 )
 
+func Ping(w http.ResponseWriter, r *http.Request)  {
+  w.Write([]byte("ok"))
+}
+
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		log.Println("NotFound page called")
