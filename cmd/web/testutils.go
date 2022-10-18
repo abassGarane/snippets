@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func NewApplication(t *testing.T)*application  {
+func NewTestApplication(t *testing.T)*application  {
  return &application{ 
     errorLog: log.New(io.Discard, "", 0),
     infoLog: log.New(io.Discard, "", 0),

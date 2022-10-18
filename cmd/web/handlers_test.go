@@ -1,37 +1,20 @@
 package main
 
 import (
-	"io"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
 func TestPing(t *testing.T)()  {
-  app := &application{ 
-    errorLog: log.New(io.Discard, "", 0),
-    infoLog: log.New(io.Discard, "", 0),
-  } 
-
-  ts := httptest.NewTLSServer(app.Routes())
-
+  app := NewTestApplication(t)
+  ts := NewTestServer(t, app.Routes())
   defer ts.Close()
-  rs, err := ts.Client().Get(ts.URL + "/ping")
-  if err != nil{
-    t.Fatal(err)
-  }
+  code, _, body := ts.Get(t, "/ping") 
   // t.Fatal(ts.URL)
-  if rs.StatusCode != http.StatusOK {
-    t.Errorf("want %d; got %d", http.StatusOK, rs.StatusCode)
+  if code != http.StatusOK {
+    t.Errorf("want %d; got %d", http.StatusOK, code)
   }
 
-  defer rs.Body.Close() 
-  body, err := ioutil.ReadAll(rs.Body)
-  if err != nil{
-    t.Fatal(err)
-  }
   if string(body) != "ok"{
     t.Errorf("want the body to be equal to %q", "ok")
   }
