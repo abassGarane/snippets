@@ -9,7 +9,7 @@ import (
 
 func TestSecureHeaders(t *testing.T)()  {
   // Running tests in parallel
-  t.Parallel()
+  // t.Parallel()
   rr := httptest.NewRecorder()
 
   r, err := http.NewRequest("GET", "/", nil)

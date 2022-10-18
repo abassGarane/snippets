@@ -10,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/abassGarane/snippet/pkg/models"
 	"github.com/abassGarane/snippet/pkg/models/mysql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golangcollege/sessions"
@@ -18,10 +19,20 @@ import (
 type application struct{
   errorLog *log.Logger
   infoLog *log.Logger
-  snippets *mysql.SnippetModel
+
+  snippets interface{
+    Insert(string,string,string)(int,error)
+    Get(int)(*models.Snippet,error)
+    Latest()([]*models.Snippet, error)
+  }
   templateCache map[string]*template.Template
   session *sessions.Session
-  users *mysql.UserModel
+
+  users interface{
+    Insert(string,string,string)error
+    Authenticate(string, string)(int,error)
+    Get(int)(*models.User, error)
+  }
 }
 //context keys
 type contextKey string
