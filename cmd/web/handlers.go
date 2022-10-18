@@ -144,7 +144,7 @@ func (app *application)LoginUser(w http.ResponseWriter, r *http.Request)  {
     return
   }
   app.session.Put(r, "userID", id)
-  http.Redirect(w,r,"/snippet/create",http.StatusSeeOther )
+  http.Redirect(w,r,"/",http.StatusSeeOther )
 }
 
 func (app *application)LogoutUser(w http.ResponseWriter, r *http.Request)  {
