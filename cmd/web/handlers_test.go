@@ -51,3 +51,14 @@ func TestShowSnippet(t *testing.T) {
 		})
 	}
 }
+
+func TestSignupUser(t *testing.T) {
+	app := NewTestApplication(t)
+	ts := NewTestServer(t, app.Routes())
+
+	defer ts.Close()
+	_, _, body := ts.Get(t, "/user/signup")
+
+	csrfToken := ExtractCSRFToken(t, body)
+	t.Log(csrfToken)
+}
