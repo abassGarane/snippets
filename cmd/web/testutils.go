@@ -69,7 +69,7 @@ func (ts *TestServer) Get(t *testing.T, urlPath string) (int, http.Header, []byt
 	return rs.StatusCode, rs.Header, body
 }
 
-var CSRFTokenRX = regexp.MustCompile(`<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">`)
+var CSRFTokenRX = regexp.MustCompile(`<input type="hidden" name="csrf_token" value="(.+)">`)
 
 func ExtractCSRFToken(t *testing.T, body []byte) string {
 	matches := CSRFTokenRX.FindSubmatch(body)
